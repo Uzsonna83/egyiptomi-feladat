@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Az Ókori Egyiptom</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f7e8;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50%;
+    }
+    h1 {
+      text-align: center;
+      color: #4a3f1d;
+      margin-bottom: 30px;
+    }
+    .question {
+      margin-bottom: 20px;
+      display: none; /* Rejtjük el a kérdéseket kezdetben */
+    }
+    button {
+      padding: 10px;
+      background-color: #4a3f1d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0.5; /* Kezdetben letiltjuk a gombot */
+    }
+    button:enabled {
+      opacity: 1; /* Engedélyezve van */
+    }
+    .image-container {
+      width: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    img {
+      width: 100%;
+      max-width: 60%; /* A kép ne legyen túl nagy */
+      height: auto;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ókori Egyiptom Kvíz</h1>
+
+    <div id="question1" class="question">
+      <label for="teamName">1. Írd be a csapat nevét:</label><br>
+      <input type="text" id="teamName" name="teamName" required oninput="enableNextButton(1)"><br>
+      <button onclick="nextQuestion(2)" disabled>Tovább</button>
+    </div>
+
+    <div id="question2" class="question">
+      <label for="question2">Mi Egyiptom folyójának a neve?</label><br>
+      <input type="radio" name="question2" value="Tigris" onclick="enableNextButton(2)"> Tigris<br>
+      <input type="radio" name="question2" value="Nílus" onclick="enableNextButton(2)"> Nílus<br>
+      <input type="radio" name="question2" value="Eufrátesz" onclick="enableNextButton(2)"> Eufrátesz<br>
+      <button onclick="nextQuestion(3)" disabled>Tovább</button>
+    </div>
+
+    <div id="question3" class="question">
+      <label for="question3">A térképen zölddel jelölt terület mit jelöl?</label><br>
+      <input type="radio" name="question3" value="Öntözéssel megművelt földterület." onclick="enableNextButton(3)"> Öntözéssel megművelt földterület.<br>
+      <input type="radio" name="question3" value="Ezeken a területeken folyamatosan harcok dúltak." onclick="enableNextButton(3)"> Ezeken a területeken folyamatosan harcok dúltak.<br>
+      <input type="radio" name="question3" value="A fáraó hatalma csupán csak ezekre a területekre terjedt ki." onclick="enableNextButton(3)"> A fáraó hatalma csupán csak ezekre a területekre terjedt ki.<br>
+      <button onclick="nextQuestion(4)" disabled>Tovább</button>
+    </div>
+
+    <div id="question4" class="question">
+      <label for="question4">Mit termesztettek az Ókori Egyiptomban? (maximum 2 válasz)</label><br>
+      <input type="checkbox" name="question4" value="Banán" onclick="limitCheckboxSelection()"> Banán<br>
+      <input type="checkbox" name="question4" value="Burgonya" onclick="limitCheckboxSelection()"> Burgonya<br>
+      <input type="checkbox" name="question4" value="Árpa" onclick="limitCheckboxSelection()"> Árpa<br>
+      <input type="checkbox" name="question4" value="Cseresznye" onclick="limitCheckboxSelection()"> Cseresznye<br>
+      <input type="checkbox" name="question4" value="Len" onclick="limitCheckboxSelection()"> Len<br>
+      <button onclick="submitQuiz()" disabled>Küldés és pontszámok megjelenítése</button>
+    </div>
+  </div>
+
+  <div class="image-container">
+    <!-- A konkrét kép beillesztése -->
+    <img src="egyiptomi-kep.jpg" alt="Ókori Egyiptom kép"> <!-- Cseréld ki a kívánt kép URL-jével -->
+  </div>
+
+  <script>
+    // Az első kérdés megjelenítése
+    document.getElementById('question1').style.display = 'block';
+
+    function nextQuestion(questionNumber) {
+      // Az aktuális kérdés elrejtése
+      document.getElementById('question' + (questionNumber - 1)).style.display = 'none';
+      
+      // A következő kérdés megjelenítése
+      document.getElementById('question' + questionNumber).style.display = 'block';
+    }
+
+    function enableNextButton(questionNumber) {
+      // Engedélyezzük a Tovább gombot, ha válaszoltak
+      document.querySelector(`#question${questionNumber} button`).disabled = false;
+    }
+
+    function limitCheckboxSelection() {
+      const checkboxes = document.querySelectorAll('input[name="question4"]:checked');
+      
+      // Ha több mint két válasz van kijelölve, akkor eltávolítjuk a harmadikat
+      if (checkboxes.length > 2) {
+        alert("Maximum két választ lehet kijelölni!");
+        checkboxes[2].checked = false; // A harmadik válasz eltávolítása
+      }
+      
+      // Engedélyezzük a gombot, ha válaszoltak
+      enableNextButton(4);
+    }
+
+    function submitQuiz() {
+      // A pontok és a válaszok mentéséhez ugyanaz a kód, amit korábban használtál
+      const teamName = document.getElementById("teamName").value;
+      if (teamName.trim() === "") {
+        alert("Kérlek add meg a csapat nevét!");
+        return;
+      }
+      localStorage.setItem("teamName", teamName);
+
+      // 2. kérdés
+      const q2 = document.querySelector('input[name="question2"]:checked');
+      if (q2 && q2.value === 'Nílus') {
+        saveAnswer('egyiptomTesztPont2', 0.5);
+      } else {
+        saveAnswer('egyiptomTesztPont2', 0);
+      }
+
+      // 3. kérdés
+      const q3 = document.querySelector('input[name="question3"]:checked');
+      if (q3 && q3.value === 'Öntözéssel megművelt földterület.') {
+        saveAnswer('egyiptomTesztPont3', 0.5);
+      } else {
+        saveAnswer('egyiptomTesztPont3', 0);
+      }
+
+      // 4. kérdés
+      const q4 = document.querySelectorAll('input[name="question4"]:checked');
+      let points = 0;
+      q4.forEach(answer => {
+        if (answer.value === 'Árpa' || answer.value === 'Len') {
+          points += 0.5;
+        }
+      });
+      saveAnswer('egyiptomTesztPont4', points);
+
+      // Ugrás az eredményekhez
+      window.location.href = 'pontszam-osszesitett.html';
+    }
+
+    function saveAnswer(question, points) {
+      localStorage.setItem(question, points);
+    }
+  </script>
+
+</body>
+</html>

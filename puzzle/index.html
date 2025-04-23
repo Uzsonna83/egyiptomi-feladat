@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Képforgatós puzzle</title>
+  <style>
+    body {
+      background: #f4f4dc;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h2 { margin-bottom: 5px; text-align: center; }
+    #instruction { margin-bottom: 10px; font-weight: bold; }
+    #timer { font-size: 1.2em; margin: 5px; color: #333; }
+    #status { font-size: 1.6em; margin-top: 10px; text-align: center; }
+    #puzzle { display: grid; grid-template-columns: repeat(4, 80px); gap: 2px; }
+    .tile { width: 80px; height: 80px; transition: transform 0.2s linear; cursor: pointer; }
+    #backBtn {
+      display:none;
+      position:fixed;
+      top:50%;
+      right:30px;
+      transform:translateY(-50%);
+    }
+  </style>
+</head>
+<body>
+  <h2>A kis képkockák kattintásra jobbra fordulnak. Fordítsd mindegyiket a helyére, hogy kirakd a nagy képet!</h2>
+  <p id="instruction">A feladatra 3 perced van.</p>
+  <div id="timer">Hátralévő idő: 3:00</div>
+  <div id="puzzle">
+    <img src="./tiles/tile_1_1.png" class="tile" style="transform: rotate(90deg);" data-rotation="90" />
+    <img src="./tiles/tile_1_2.png" class="tile" style="transform: rotate(180deg);" data-rotation="180" />
+    <img src="./tiles/tile_1_3.png" class="tile" style="transform: rotate(270deg);" data-rotation="270" />
+    <img src="./tiles/tile_1_4.png" class="tile" style="transform: rotate(90deg);" data-rotation="90" />
+    <img src="./tiles/tile_2_1.png" class="tile" style="transform: rotate(180deg);" data-rotation="180" />
+    <img src="./tiles/tile_2_2.png" class="tile" style="transform: rotate(270deg);" data-rotation="270" />
+    <img src="./tiles/tile_2_3.png" class="tile" style="transform: rotate(90deg);" data-rotation="90" />
+    <img src="./tiles/tile_2_4.png" class="tile" style="transform: rotate(180deg);" data-rotation="180" />
+    <img src="./tiles/tile_3_1.png" class="tile" style="transform: rotate(270deg);" data-rotation="270" />
+    <img src="./tiles/tile_3_2.png" class="tile" style="transform: rotate(90deg);" data-rotation="90" />
+    <img src="./tiles/tile_3_3.png" class="tile" style="transform: rotate(180deg);" data-rotation="180" />
+    <img src="./tiles/tile_3_4.png" class="tile" style="transform: rotate(270deg);" data-rotation="270" />
+    <img src="./tiles/tile_4_1.png" class="tile" style="transform: rotate(90deg);" data-rotation="90" />
+    <img src="./tiles/tile_4_2.png" class="tile" style="transform: rotate(180deg);" data-rotation="180" />
+    <img src="./tiles/tile_4_3.png" class="tile" style="transform: rotate(270deg);" data-rotation="270" />
+    <img src="./tiles/tile_4_4.png" class="tile" style="transform: rotate(90deg);" data-rotation="90" />
+    <img src="./tiles/tile_5_1.png" class="tile" style="transform: rotate(180deg);" data-rotation="180" />
+    <img src="./tiles/tile_5_2.png" class="tile" style="transform: rotate(270deg);" data-rotation="270" />
+    <img src="./tiles/tile_5_3.png" class="tile" style="transform: rotate(90deg);" data-rotation="90" />
+    <img src="./tiles/tile_5_4.png" class="tile" style="transform: rotate(180deg);" data-rotation="180" />
+  </div>
+  <p id="status"></p>
+  <button id="backBtn" onclick="window.location.href='../index.html'">Vissza a menübe</button>
+
+  <!-- Képforgatás végén és idő leteltekor megszólaló új hang -->
+  <audio id="endSound" src="https://www.soundjay.com/buttons/sounds/beep-08b.mp3" preload="none"></audio>
+
+  <script>
+    const tiles = document.querySelectorAll('.tile');
+    const status = document.getElementById("status");
+    const timerDisplay = document.getElementById("timer");
+    const sound = document.getElementById("endSound");
+    let started = false;
+    let completed = false;
+    let startTime = null;
+    let interval = null;
+
+    function checkWin() {
+      let allAligned = true;
+      tiles.forEach(tile => {
+        if (parseInt(tile.dataset.rotation) % 360 !== 0) allAligned = false;
+      });
+      return allAligned;
+    }
+
+    function startTimer() {
+      let remaining = 180;
+      interval = setInterval(() => {
+        if (remaining <= 0) {
+          clearInterval(interval);
+          completed = true;
+          status.textContent = "Letelt az idő!";
+          document.getElementById("backBtn").style.display = "inline-block";
+          let helyes = 0;
+          tiles.forEach(tile => {
+            if (parseInt(tile.dataset.rotation) % 360 === 0) helyes++;
+          });
+          localStorage.setItem("egyiptomPuzzlePont", (helyes * 0.5).toString());
+          sound.play().catch(error => console.log("A hang nem játszható le automatikusan: ", error));
+          sound.load();
+	sound.play();
+sound.play(); // Idő lejártakor is megszólal a hang
+          
+        } else {
+          const m = Math.floor(remaining / 60);
+          const s = remaining % 60;
+          timerDisplay.textContent = "Hátralévő idő: " + m + ":" + (s < 10 ? "0" + s : s);
+          remaining--;
+        }
+      }, 1000);
+    }
+
+    tiles.forEach(tile => {
+      tile.addEventListener('click', () => {
+        if (completed) return;
+        if (!started) {
+          started = true;
+          startTime = Date.now();
+          startTimer();
+        }
+        let current = parseInt(tile.dataset.rotation);
+        let next = current + 90;
+        tile.dataset.rotation = next;
+        tile.style.transform = "rotate(" + next + "deg)";
+
+        if (checkWin()) {
+          clearInterval(interval);
+          completed = true;
+          const elapsed = Math.floor((Date.now() - startTime) / 1000);
+          const m = Math.floor(elapsed / 60);
+          const s = elapsed % 60;
+          const timeText = (m > 0 ? m + " perc " : "") + (s > 0 ? s + " másodperc" : "");
+          status.textContent = "Gratulálok! A kirakást " + timeText + " alatt oldottad meg!";
+          document.getElementById("backBtn").style.display = "inline-block";
+          sound.play(); // Kép sikeres kirakása után is megszólal a hang
+          localStorage.setItem("egyiptomPuzzlePont", "10");
+          
+        }
+      });
+    });
+  </script>
+</body>
+</html>

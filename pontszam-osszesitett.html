@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Eredmények</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4dc;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      text-align: center;
+    }
+    h1 {
+      color: #4a3f1d;
+      font-size: 2em;
+    }
+    p {
+      font-size: 1.3em;
+    }
+    .points {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Szép munka!</h1>
+  <p id="summary">Pontszám betöltése...</p>
+  <button id="downloadBtn" style="margin-top: 20px;" onclick="downloadJson()">JSON fájl letöltése</button>
+
+  <script>
+    function calculateTotalScore() {
+      const puzzle = parseFloat(localStorage.getItem("egyiptomPuzzlePont")) || 0;
+      const pontszam2 = parseFloat(localStorage.getItem('egyiptomTesztPont2') || 0);
+      const pontszam3 = parseFloat(localStorage.getItem('egyiptomTesztPont3') || 0);
+      const pontszam4 = parseFloat(localStorage.getItem('egyiptomTesztPont4') || 0);
+      
+      // Összesített pontszám
+      const totalScore = puzzle + pontszam2 + pontszam3 + pontszam4;
+
+      // Szöveges eredmény összeállítása
+      document.getElementById('summary').innerHTML = 
+        `A képkirakós feladatnál <span class="points">${puzzle}</span> pontot szereztél.<br>` +
+        `A második kérdésnél (Mi Egyiptom folyójának a neve?) <span class="points">${pontszam2}</span> pontot szereztél.<br>` +
+        `A harmadik kérdésnél (Mi a zölddel jelölt terület?) <span class="points">${pontszam3}</span> pontot szereztél.<br>` +
+        `A negyedik kérdésnél (Mit termesztettek az Ókori Egyiptomban?) <span class="points">${pontszam4}</span> pontot szereztél.<br>` +
+        `Összesen <span class="points">${totalScore}</span> / 12 pontot értél el.`;
+
+      // JSON fájl generálása
+      const result = {
+        teamName: localStorage.getItem("teamName"),
+        puzzlePoints: puzzle,
+        question2Points: pontszam2,
+        question3Points: pontszam3,
+        question4Points: pontszam4,
+        totalScore: totalScore
+      };
+
+      // JSON fájl mentéshez a gomb aktiválása
+      const jsonString = JSON.stringify(result, null, 2); // Az objektum JSON formátumban
+      localStorage.setItem("jsonResult", jsonString);
+    }
+
+    // A JSON fájl letöltése
+    function downloadJson() {
+      const jsonString = localStorage.getItem("jsonResult");
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "egyiptom_kviz_eredmeny.json"; // Fájlnév
+      link.click(); // Letöltés elindítása
+    }
+
+    calculateTotalScore(); // Eredmény kiszámítása és JSON fájl generálása
+  </script>
+
+</body>
+</html>
