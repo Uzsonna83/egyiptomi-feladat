@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Az Ókori Egyiptom</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f7e8;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50%;
+    }
+    h1 {
+      text-align: center;
+      color: #4a3f1d;
+      margin-bottom: 30px;
+    }
+    .question {
+      margin-bottom: 20px;
+      display: none; /* Rejtjük el a kérdéseket kezdetben */
+    }
+    button {
+      padding: 10px;
+      background-color: #5d6d7e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0.5; /* Kezdetben letiltjuk a gombot */
+    }
+    button:enabled {
+      opacity: 1; /* Engedélyezve van */
+    }
+    .image-container {
+      width: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    img {
+      width: 100%;
+      max-width: 60%; /* A kép ne legyen túl nagy */
+      height: auto;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  </style>
+<style>
+  body,
+  label,
+  .question,
+  input,
+  button,
+  h1,
+  h2,
+  p {
+    color: black !important;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ókori Egyiptom Kvíz</h1>
+
+    <!-- Név beírása mező -->
+    <div id="question1" class="question">
+      <label for="teamName">Írd be a csapat nevét:</label><br>
+      <input type="text" id="teamName" name="teamName" required oninput="enableNextButton(1)"><br>
+      <button id="nextButton" onclick="nextQuestion(2)" disabled>Tovább</button>
+    </div>
+
+    <!-- Kvíz kérdései -->
+    <div id="question2" class="question">
+      <label for="question2">Mi Egyiptom folyójának a neve?</label><br>
+      <input type="radio" name="question2" value="Tigris" onclick="enableNextButton(2)"> Tigris<br>
+      <input type="radio" name="question2" value="Nílus" onclick="enableNextButton(2)"> Nílus<br>
+      <input type="radio" name="question2" value="Eufrátesz" onclick="enableNextButton(2)"> Eufrátesz<br>
+      <button onclick="nextQuestion(3)" disabled>Tovább</button>
+    </div>
+
+    <div id="question3" class="question">
+      <label for="question3">A térképen zölddel jelölt terület mit jelöl?</label><br>
+      <input type="radio" name="question3" value="Öntözéssel megművelt földterület." onclick="enableNextButton(3)"> Öntözéssel megművelt földterület.<br>
+      <input type="radio" name="question3" value="Ezeken a területeken folyamatosan harcok dúltak." onclick="enableNextButton(3)"> Ezeken a területeken folyamatosan harcok dúltak.<br>
+      <input type="radio" name="question3" value="A fáraó hatalma csupán csak ezekre a területekre terjedt ki." onclick="enableNextButton(3)"> A fáraó hatalma csupán csak ezekre a területekre terjedt ki.<br>
+      <button onclick="nextQuestion(4)" disabled>Tovább</button>
+    </div>
+
+    <div id="question4" class="question">
+      <label for="question4">Mit termesztettek az Ókori Egyiptomban? (maximum 2 válasz)</label><br>
+      <input type="checkbox" name="question4" value="Banán" onclick="limitCheckboxSelection()"> Banán<br>
+      <input type="checkbox" name="question4" value="Burgonya" onclick="limitCheckboxSelection()"> Burgonya<br>
+      <input type="checkbox" name="question4" value="Árpa" onclick="limitCheckboxSelection()"> Árpa<br>
+      <input type="checkbox" name="question4" value="Cseresznye" onclick="limitCheckboxSelection()"> Cseresznye<br>
+      <input type="checkbox" name="question4" value="Len" onclick="limitCheckboxSelection()"> Len<br>
+      <button onclick="nextQuestion(5)" disabled>Tovább</button>
+    </div>
+
+    <div id="question5" class="question">
+      <label for="question5">Mit használtak az egyiptomiak a földek megmunkálásához?</label><br>
+      <input type="radio" name="question5" value="Traktor" onclick="enableNextButton(5)"> Traktor<br>
+      <input type="radio" name="question5" value="Eke" onclick="enableNextButton(5)"> Eke<br>
+      <input type="radio" name="question5" value="Kasza" onclick="enableNextButton(5)"> Kasza<br>
+      <button onclick="nextQuestion(6)" disabled>Tovább</button>
+    </div>
+
+    <div id="question6" class="question">
+      <label for="question6">Melyik állatot használták főként a földek megművelésére?</label><br>
+      <input type="radio" name="question6" value="Teve" onclick="enableNextButton(6)"> Teve<br>
+      <input type="radio" name="question6" value="Szarvasmarha" onclick="enableNextButton(6)"> Szarvasmarha<br>
+      <input type="radio" name="question6" value="Ló" onclick="enableNextButton(6)"> Ló<br>
+      <button onclick="nextQuestion(7)" disabled>Tovább</button>
+    </div>
+
+    <div id="question7" class="question">
+      <label for="question7">Mi volt az ókori egyiptomi mezőgazdaság fő célja?</label><br>
+      <input type="radio" name="question7" value="Épületek készítése." onclick="enableNextButton(7)"> Épületek készítése.<br>
+      <input type="radio" name="question7" value="Élelmiszertermelés a lakosság számára." onclick="enableNextButton(7)"> Élelmiszertermelés a lakosság számára.<br>
+      <input type="radio" name="question7" value="Papirusz készítése" onclick="enableNextButton(7)"> Papirusz készítése.<br>
+      <button onclick="nextQuestion(8)" disabled>Tovább</button>
+    </div>
+
+    <div id="question8" class="question">
+      <label for="question8">Miért volt fontos az öntözés az egyiptomi mezőgazdaságban?</label><br>
+      <input type="radio" name="question8" value="Nélkülözhetetlen volt a termények növekedéséhez." onclick="enableNextButton(8)"> Nélkülözhetetlen volt a termények növekedéséhez.<br>
+      <input type="radio" name="question8" value="A termékek szállításához." onclick="enableNextButton(8)"> A termékek szállításához.<br>
+      <input type="radio" name="question8" value="Az esővíz megakadályozására." onclick="enableNextButton(8)"> Az esővíz megakadályozására.<br>
+      <button onclick="nextQuestion(9)" disabled>Tovább</button>
+    </div>
+
+    <div id="question9" class="question">
+      <label for="question9">Mi volt az ókori egyiptomiak legfontosabb állati terméke?</label><br>
+      <input type="radio" name="question9" value="Tojás" onclick="enableNextButton(9)"> Tojás<br>
+      <input type="radio" name="question9" value="Tej" onclick="enableNextButton(9)"> Tej<br>
+      <input type="radio" name="question9" value="Hús" onclick="enableNextButton(9)"> Hús<br>
+      <button onclick="submitQuiz()" disabled>Küldés és pontszámok megjelenítése</button>
+    </div>
+  </div>
+
+  <div class="image-container">
+    <!-- A konkrét kép beillesztése -->
+    <img src="egyiptomi-kep.jpg" alt="Ókori Egyiptom kép">
+  </div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const question1 = document.getElementById('question1');
+    const input = document.getElementById("teamName");
+    const button = document.querySelector("#question1 button");
+
+    if (question1) {
+        question1.style.display = 'block'; // Biztosítja, hogy az első kérdés látszik
+    } else {
+        console.warn("Nem található az első kérdés blokk!");
+    }
+
+    if (input && button) {
+        input.addEventListener("input", function () {
+            console.log("DEBUG - Csapatnév:", input.value); // Ellenőrzés konzolban
+            button.disabled = input.value.trim() === "" ? true : false;
+            button.style.opacity = input.value.trim() === "" ? "0.5" : "1";
+        });
+    } else {
+        console.warn("Nem található input vagy gomb az első kérdéshez!");
+    }
+});
+
+    window.onload = function() {
+        document.getElementById('question1').style.display = 'block';
+    };
+
+    function nextQuestion(questionNumber) {
+        document.getElementById('question' + (questionNumber - 1)).style.display = 'none';
+        document.getElementById('question' + questionNumber).style.display = 'block';
+    }
+
+   function enableNextButton(questionNumber) {
+  const inputs = document.querySelectorAll(`#question${questionNumber} input`);
+  const button = document.querySelector(`#question${questionNumber} button`);
+
+  if (!inputs || !button) {
+    console.warn(`Nem található input vagy gomb a kérdés ${questionNumber}-hez`);
+    return;
+  }
+
+  let isChecked = false;
+  inputs.forEach((input) => {
+    if (input.checked) {
+      isChecked = true;
+    }
+  });
+
+  button.disabled = !isChecked;
+  button.style.opacity = isChecked ? "1" : "0.5";
+}
+
+    function limitCheckboxSelection() {
+    const checkboxes = document.querySelectorAll('input[name="question4"]:checked');
+    const button = document.querySelector('#question4 button');
+
+    if (checkboxes.length > 2) {
+        alert("Maximum két választ lehet kijelölni!");
+        checkboxes[2].checked = false;
+    }
+
+    // Csak akkor jelenik meg a Tovább gomb, ha pontosan 2 válasz van kiválasztva
+    if (checkboxes.length === 2) {
+        button.disabled = false;
+        button.style.opacity = "1";
+    } else {
+        button.disabled = true;
+        button.style.opacity = "0.5";
+    }
+}
+
+
+    function submitQuiz() {
+        const teamName = document.getElementById("teamName").value;
+        if (teamName.trim() === "") {
+            alert("Kérlek add meg a csapat nevét!");
+            return;
+        }
+        localStorage.setItem("teamName", teamName);
+
+        let totalScore = parseFloat(localStorage.getItem("egyiptomPuzzlePont")) || 0; // Puzzle pont hozzáadása
+
+        // Minden kérdés eredményének mentése
+        for (let i = 2; i <= 9; i++) {
+            const selectedAnswer = document.querySelector(`input[name="question${i}"]:checked`);
+            if (selectedAnswer) {
+                let points = 0;
+                if (
+                    (i === 2 && selectedAnswer.value === "Nílus") || 
+                    (i === 3 && selectedAnswer.value === "Öntözéssel megművelt földterület.") || 
+                    (i === 5 && selectedAnswer.value === "Eke") || 
+                    (i === 6 && selectedAnswer.value === "Szarvasmarha") || 
+                    (i === 7 && selectedAnswer.value === "Élelmiszertermelés a lakosság számára.") || 
+                    (i === 8 && selectedAnswer.value === "Nélkülözhetetlen volt a termények növekedéséhez.") || 
+                    (i === 9 && selectedAnswer.value === "Tej")
+                ) {
+                    points = 1; // Minden jó válasz 1 pont
+                }
+                localStorage.setItem(`egyiptomTesztPont${i}`, points);
+                localStorage.setItem(`question${i}_answer`, selectedAnswer.value);
+                totalScore += points;
+            }
+        }
+
+        // Külön kezelés a 4. kérdésnél (fél pont helyes válaszonként)
+        const q4Answers = document.querySelectorAll('input[name="question4"]:checked');
+      let q4Points = 0;
+      const q4AnswerList = [];
+
+      q4Answers.forEach(answer => {
+        if (answer.value === "Árpa" || answer.value === "Len") {
+          q4Points += 0.5;
+        }
+        q4AnswerList.push(answer.value);
+      });
+
+      localStorage.setItem("egyiptomTesztPont4", q4Points);
+      localStorage.setItem("question4_answer", JSON.stringify(q4AnswerList));
+
+      totalScore += q4Points; // ✅ Itt adjuk hozzá a fél pontokat
+      localStorage.setItem("totalScore", totalScore);
+
+      window.location.href = 'pontszam-osszesitett.html';
+    }
+
+    window.onload = function() {
+      document.getElementById('question1').style.display = 'block';
+    };
+  </script>
+</body>
+</html>
+
