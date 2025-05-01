@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Pontszám összesítő</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f7e8;
+      color: #333;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: black;
+      margin-bottom: 30px;
+    }
+    .summary {
+      margin-top: 20px;
+      font-size: 18px;
+      line-height: 1.8;
+      display: inline-block;
+      text-align: left;
+      color: black;
+    }
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #5d6d7e;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Szép munka!</h1>
+  <div class="summary" id="summary"></div>
+  <button onclick="downloadResults()">JSON fájl letöltése</button>
+
+  <script>
+    const teamName = localStorage.getItem("teamName") || "Ismeretlen csapat";
+    const puzzleScore = parseFloat(localStorage.getItem("egyiptomPuzzlePont")) || 0;
+    const quizScoreTotal = parseFloat(localStorage.getItem("totalScore")) || 0;
+    const quizScore = quizScoreTotal - puzzleScore;
+
+    const details = {
+      teamName: teamName,
+      puzzleScore: puzzleScore,
+      quizScore: quizScore,
+      totalScore: parseFloat(quizScoreTotal.toFixed(1)),
+      answers: {}
+    };
+
+    for (let i = 2; i <= 9; i++) {
+      const answer = localStorage.getItem(`question${i}_answer`) || "Nincs adat";
+      const score = parseFloat(localStorage.getItem(`egyiptomTesztPont${i}`)) || 0;
+      details.answers[`question${i}`] = {
+        answer: answer,
+        score: score
+      };
+    }
+
+    const q4AnswerJSON = localStorage.getItem("question4_answer");
+    const q4Score = parseFloat(localStorage.getItem("egyiptomTesztPont4")) || 0;
+    details.answers["question4"] = {
+      answer: q4AnswerJSON ? JSON.parse(q4AnswerJSON) : [],
+      score: q4Score
+    };
+
+    document.getElementById("summary").innerHTML = `
+      <p>Az első részfeladat (képkirakó) során elért pontszám: <strong>${puzzleScore.toFixed(1)}</strong></p>
+      <p>A második részfeladat (kvíz kérdések) során elért pontszám: <strong>${quizScore.toFixed(1)}</strong></p>
+      <p>Összesen: <strong>${quizScoreTotal.toFixed(1)} / 10 pont</strong></p>
+    `;
+
+    function downloadResults() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(details, null, 2));
+      const dlAnchorElem = document.createElement('a');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `${teamName.replaceAll(" ", "_")}_eredmeny.json`);
+      dlAnchorElem.click();
+    }
+  </script>
+</body>
+</html>
